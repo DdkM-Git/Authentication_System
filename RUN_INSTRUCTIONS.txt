@@ -1,0 +1,102 @@
+# How to Run Locally (Auth Starter - MongoDB)
+
+## Prerequisites
+- Node.js 18+ (tested with 20/22)
+- npm
+- MongoDB 6+ (local, Docker, or MongoDB Atlas)
+
+Project structure:
+auth-starter-mongo/
+  server/
+  client/
+  README.md
+
+---
+
+## 1) Start MongoDB
+
+### Option A — Local MongoDB
+Windows:
+  net start MongoDB
+macOS (Homebrew):
+  brew services start mongodb-community
+Linux:
+  sudo systemctl start mongod
+
+If installed manually:
+  mkdir C:\data\db
+  "C:\Program Files\MongoDB\Server\7.0\bin\mongod.exe" --dbpath "C:\data\db"
+
+### Option B — Docker
+  docker run -d --name mongo \
+    -p 27017:27017 \
+    -v mongo-data:/data/db \
+    mongo:7.0
+
+### Option C — MongoDB Atlas (cloud)
+  - Create cluster
+  - Create database user
+  - Allow your IP
+  - Get SRV URI and paste into .env
+
+---
+
+## 2) Configure Environment
+
+Open server/.env:
+
+PORT=4000
+CLIENT_ORIGIN=http://localhost:5173
+MONGO_URI=mongodb://127.0.0.1:27017/authdb
+JWT_SECRET=super_long_random_string_change_me
+JWT_EXPIRES_MINUTES=30
+CSRF_COOKIE_NAME=csrfToken
+
+If using Atlas:
+MONGO_URI=mongodb+srv://<user>:<pass>@<cluster-id>.mongodb.net/authdb
+
+---
+
+## 3) Run the Backend
+
+cd server
+npm install
+npm run dev
+
+Visit http://localhost:4000/health → {"ok":true}
+
+Default demo user:
+  email: test@example.com
+  password: secret123
+
+---
+
+## 4) Run the Frontend
+
+cd ../client
+npm install
+npm run dev
+
+Open http://localhost:5173
+Login with the demo credentials.
+
+---
+
+## 5) Troubleshooting
+
+ECONNREFUSED 127.0.0.1:27017 → MongoDB not running.
+CORS error → Ensure CLIENT_ORIGIN matches the frontend URL.
+Cookie not set → Always access via the Vite dev server.
+
+---
+
+## 6) Quick Commands Summary
+
+# Start Mongo (Docker)
+docker run -d -p 27017:27017 mongo:7.0
+
+# Backend
+cd server && npm install && npm run dev
+
+# Frontend
+cd ../client && npm install && npm run dev

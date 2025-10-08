@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Auth Starter (MongoDB)</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+    <!-- tiny jQuery effect for invalid form shake -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-3gJwYpJPx+YhBxT/DeZf7wH5P9I1F2zn3eVO6wF0Y98=" crossorigin="anonymous"></script>
+    <script>
+      window.shake = function(selector){
+        const el = window.jQuery(selector);
+        el.addClass('shake');
+        setTimeout(()=> el.removeClass('shake'), 500);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

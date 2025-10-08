@@ -1,0 +1,107 @@
+# Documentation: Auth Starter (MongoDB)
+
+## Overview
+This project implements a simple, secure login/logout flow using:
+- Node.js + Express
+- JWT (JSON Web Tokens)
+- MongoDB (via Mongoose)
+- React + Vite
+- CSS + small jQuery effect
+
+Users can log in with email/password, see a welcome page, and log out.
+Sessions expire automatically after 30 minutes.
+
+---
+
+## Key Features
+- Email/password validation (client + server)
+- Bcrypt password hashing
+- JWT in httpOnly cookie (SameSite=Strict)
+- CSRF protection (double-submit token)
+- Auto logout on token expiry
+- Input validation (Joi)
+- Responsive UI (React + CSS)
+- Demo user: test@example.com / secret123
+
+---
+
+## Architecture
+### Backend
+- **Express API** with routes:
+  - POST /api/auth/login
+  - POST /api/auth/register
+  - GET  /api/auth/me
+  - POST /api/auth/logout
+- **Middleware**:
+  - Helmet for headers
+  - CORS limited to CLIENT_ORIGIN
+  - Rate limiting
+  - CSRF token issuing and checking
+- **Mongoose Model**: User { email, password_hash, created_at }
+- **JWT** stored in secure cookie, 30 min expiry.
+
+### Frontend
+- React + react-router-dom for routing.
+- Pages:
+  - `/` → Login form
+  - `/welcome` → Protected page (Hello, {email})
+- Auto logout timer using exp from /me.
+- jQuery “shake” animation on invalid form.
+
+---
+
+## Security Considerations
+- **XSS:** React escapes by default; Helmet adds CSP in production.
+- **CSRF:** Double-submit cookie + SameSite=Strict.
+- **SQLi:** Not applicable (MongoDB), all queries validated.
+- **Rate limiting:** Prevents brute force.
+- **Password hashing:** bcryptjs with cost 12.
+- **Cookies:** httpOnly, secure (in production), SameSite=Strict.
+
+---
+
+## Trade-offs and Design Choices
+
+1. **JWT in Cookie vs localStorage**
+   - Chose httpOnly cookie → safer vs. XSS.
+   - Trade-off: needs CSRF protection.
+
+2. **Short-lived token (30 min)**
+   - Simplifies logic.
+   - Trade-off: must log in again after expiry.
+
+3. **CSRF double-submit token**
+   - Simple, framework-independent.
+   - Trade-off: requires client JS to read cookie.
+
+4. **Mongoose ODM**
+   - Easier schema management.
+   - Trade-off: small performance overhead.
+
+5. **Minimal password policy**
+   - Quick demo usability.
+   - Trade-off: weaker enforcement (expand easily).
+
+6. **Single environment file**
+   - Simplifies configuration.
+   - Trade-off: separate env files for prod/staging recommended.
+
+---
+
+## Extensibility Ideas
+- Add refresh tokens for longer sessions.
+- Add registration UI.
+- Add password reset and email verification.
+- Add Docker Compose for API + DB + Client.
+- Add 2FA (TOTP or WebAuthn).
+- Add unit tests (Vitest / Supertest).
+
+---
+
+## Summary
+This auth starter balances **security and simplicity**:
+- JWT + httpOnly cookie for safe stateless sessions.
+- CSRF and input validation to prevent common attacks.
+- Minimal React UI for clarity and extensibility.
+
+Ideal for learning or as a starting point for secure Node/React apps.
